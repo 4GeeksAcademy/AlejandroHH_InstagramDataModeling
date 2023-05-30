@@ -10,17 +10,14 @@ Base = declarative_base()
 
 class User(Base):
     __tablename__ = 'user'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True, unique=True)
     username = Column(String(50), nullable=False, unique=True)
     email = Column(String(70), nullable= False, unique= True)
-    phone = Column(Integer, nullable= False, unique= True)
+    phone = Column(String, nullable= False, unique= True)
     password = Column(String(50), nullable= False)
     birthday = Column(Date, nullable= False)
-    profile_pic = Column(String(100), ForeignKey('profilepic.id'))
-    followers = Column(Integer, ForeignKey('followers.id'))
-    following = Column(Integer, ForeignKey('following.id'))
+    # profile_pic = Column(String(100), ForeignKey('profilepic.id')) 
+    
 
 
 class Followers(Base):
@@ -29,19 +26,12 @@ class Followers(Base):
     user_id = Column(Integer, ForeignKey('user.id'), nullable= False, unique=True)
     follower_id = Column(Integer, ForeignKey('user.id'), nullable= False, unique=True)
 
-class Following(Base):
-    __tablename__='following'
-    id=Column(Integer, primary_key= True, unique=True)
-    user_id = Column(Integer, ForeignKey('user.id'), unique=True)
-    following_id = Column(Integer, ForeignKey('user.id'), unique=True, nullable= False)
-
 
 
 class ProfilePic(Base):
     __tablename__ = 'profilepic'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True, unique=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
     url = Column(String(250), nullable=False)
     
 
@@ -51,8 +41,8 @@ class VideoPost(Base):
     id = Column(Integer, primary_key=True, unique=True)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False, unique=True)
     description = Column(String(250))
-    likes_id = Column(Integer, ForeignKey('videolikes.post_id'))
-    comments_id = Column(String(500), ForeignKey('videocomments.post_id'))
+    # likes_id = Column(Integer, ForeignKey('videolikes.post_id'))
+    # comments_id = Column(String(500), ForeignKey('videocomments.post_id'))
     postDate = Column(DateTime, nullable=False)
     user = relationship(User)
 
@@ -60,10 +50,10 @@ class VideoPost(Base):
 class ImagePost(Base):
     __tablename__= 'imagepost'
     id = Column(Integer, primary_key=True, unique=True)
-    user_id = Column(Integer, nullable=False, unique=True)
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False, unique=True)
     description = Column(String(250))
-    likes_id = Column(Integer, ForeignKey('imagelikes.post_id'))
-    comments_id = Column(String(500), ForeignKey('imagecomments.post_id'))
+    # likes_id = Column(Integer, ForeignKey('imagelikes.post_id'))
+    # comments_id = Column(String(500), ForeignKey('imagecomments.post_id'))
     postDate = Column(DateTime, nullable=False)
 
 class Video(Base):
@@ -81,26 +71,31 @@ class Image(Base):
 class VideoLikes(Base):
     __tablename__='videolikes'
     id = Column(Integer, primary_key=True, unique=True)
-    post_id = Column(Integer, ForeignKey('videopost.likes_id'), nullable=False, unique=True)
+    post_id = Column(Integer, ForeignKey('videopost.id'), nullable=False, unique=True)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False, unique=True)
 
 class VideoComments(Base):
     __tablename__='videocomments'
     id = Column(Integer, primary_key=True, unique=True)
-    post_id = Column(Integer, ForeignKey('videopost.comments_id'), nullable=False, unique=True)
+    post_id = Column(Integer, ForeignKey('videopost.id'), nullable=False, unique=True)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False, unique=True)
+    comments = Column(String(500), nullable=False)
+    #string NO nulo
 
 class ImageLikes(Base):
     __tablename__='imagelikes'
     id = Column(Integer, primary_key=True, unique=True)
-    post_id = Column(Integer, ForeignKey('imagepost.likes_id'), nullable=False, unique=True)
+    post_id = Column(Integer, ForeignKey('imagepost.id'), nullable=False, unique=True)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False, unique=True)
 
 class ImageComments(Base):
     __tablename__ = 'imagecomments'
     id = Column(Integer, primary_key=True, unique=True)
-    post_id = Column(Integer, ForeignKey('imagepost.comments_id'), nullable=False, unique=True)
+    post_id = Column(Integer, ForeignKey('imagepost.id'), nullable=False, unique=True)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False, unique=True)
+    comments = Column(String(500), nullable=False)
+
+    #string NO nulo
 
 
     def to_dict(self):
